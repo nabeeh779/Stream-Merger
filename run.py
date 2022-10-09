@@ -31,24 +31,25 @@ def export_data(msg):
                 END_WITH_HALF_SYCH_FLAG = 0
                 str_temp = "0xf4f4"+msg[4:4+DATA_LENGTH]
                 SAVE_LIST.append(str_temp)
-    else:
-        if msg.endswith('f4f4'):
-            END_WITH_SYCH_FLAG = 1 #it means that we should save first 3bytes in the next message.
-            temp_flag = 1
-            
+    else:   
         if msg[2:6] == 'f4f4':#appers at first of the message   
             str_temp = "0xf4f4"+msg[data_index+4:data_index+4+DATA_LENGTH]
             SAVE_LIST.append(str_temp)#adding the data to the list
             
-        if 'f4f4' in msg[4:] and temp_flag==1:
-            #There is two 'f4f4' in the message one in the middle and one in the end.
-            msg = msg[4:-4]
+        if 'f4f4' in msg[4:-4]:
+            #if there is in the middle of the message
+            msg = msg[4:]
             data_index = msg.find('f4f4')
             str_temp = "0xf4f4"+msg[data_index+4:data_index+4+DATA_LENGTH]
             SAVE_LIST.append(str_temp)#adding the data to the list
-        else:
-            str_temp = "0xf4f4"+msg[data_index+4:data_index+4+DATA_LENGTH]
-            SAVE_LIST.append(str_temp)#adding the data to the list
+            
+        if msg.endswith('f4f4'):
+            END_WITH_SYCH_FLAG = 1 #it means that we should save first 3bytes in the next message.
+            temp_flag = 1
+            
+        #else:
+         #   str_temp = "0xf4f4"+msg[data_index+4:data_index+4+DATA_LENGTH]
+         #   SAVE_LIST.append(str_temp)#adding the data to the list
             
     print(SAVE_LIST)
 
