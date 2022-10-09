@@ -14,6 +14,10 @@ def export_data(msg):
         END_WITH_SYCH_FLAG = 0
         str_temp = "0xf4f4"+msg[2:2+DATA_LENGTH]
         SAVE_LIST.append(str_temp)
+    if END_WITH_HALF_SYCH_FLAG == 1:#check the former message
+        END_WITH_HALF_SYCH_FLAG = 0
+        str_temp = "0xf4f4"+msg[4:4+DATA_LENGTH]
+        SAVE_LIST.append(str_temp)   
         
     data_index = msg.find(SYNCH)#searching for 'f4f4'
     print('data index is:'+str(data_index))
@@ -25,12 +29,12 @@ def export_data(msg):
             return #exit the function 
         elif msg.endswith('f4'):
             END_WITH_HALF_SYCH_FLAG = 1 #it means that we should look for 'f4' in the next message.
-        if msg[2:4] == 'f4' :#message start with 'f4' then we should check if the former message ended with 'f4'
+        #if msg[2:4] == 'f4' :#message start with 'f4' then we should check if the former message ended with 'f4'
             #START_WITH_HALF_SYCH_FLAG = 1   
-            if END_WITH_HALF_SYCH_FLAG == 1:#check the former message
-                END_WITH_HALF_SYCH_FLAG = 0
-                str_temp = "0xf4f4"+msg[4:4+DATA_LENGTH]
-                SAVE_LIST.append(str_temp)
+            #if END_WITH_HALF_SYCH_FLAG == 1:#check the former message
+           #     END_WITH_HALF_SYCH_FLAG = 0
+            #    str_temp = "0xf4f4"+msg[4:4+DATA_LENGTH]
+           #     SAVE_LIST.append(str_temp)
     else:   
         if msg[2:6] == 'f4f4':#appers at first of the message   
             str_temp = "0xf4f4"+msg[data_index+4:data_index+4+DATA_LENGTH]
@@ -46,7 +50,9 @@ def export_data(msg):
         if msg.endswith('f4f4'):
             END_WITH_SYCH_FLAG = 1 #it means that we should save first 3bytes in the next message.
             temp_flag = 1
-            
+        #check if message ends with f4
+        if msg.endswith('f4'):
+            END_WITH_HALF_SYCH_FLAG = 1 #it means that we should look for 'f4' in the next message.
         #else:
          #   str_temp = "0xf4f4"+msg[data_index+4:data_index+4+DATA_LENGTH]
          #   SAVE_LIST.append(str_temp)#adding the data to the list
