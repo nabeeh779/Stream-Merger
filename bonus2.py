@@ -16,7 +16,6 @@ def save_to_list(start,end,msg):
     #Created this function to avoid duplicate code
     #This function saves data to a list\
     global SAVE_TEMP
-    #str_temp = "0xf4f4"+msg[start:end+DATA_LENGTH]+SAVE_TEMP
     str_temp = msg[start:end+DATA_LENGTH]+SAVE_TEMP
     SAVE_TEMP = '' 
     SAVE_LIST.append(str_temp)
@@ -35,21 +34,23 @@ def export_data(msg,ofset):
     ofset_found_flag = 0
     global END_WITH_SYCH_FLAG,END_WITH_HALF_SYCH_FLAG,START_WITH_HALF_SYCH_FLAG,SAVE_LIST,SAVE_TEMP
     global F4F4_FLAG
-    if ofset in msg and F4F4_FLAG == 1:
-        ofset_index = contains_offset(msg,ofset)
+    ofset_index = contains_offset(msg,ofset)
+    if ofset in msg:
         ofset_found_flag = 1
-        if SAVE_TEMP != '' and msg.find('f4f4')==-1 and msg.find('f4') == -1:
+        if F4F4_FLAG == 1:
             F4F4_FLAG = 0
-            #WE SAVED A STREAM BEFORE
-            SAVE_TEMP += msg[2:ofset_index]
-            #str_temp = "0xf4f4"+SAVE_TEMP
-            str_temp = SAVE_TEMP
+            if SAVE_TEMP != '' and msg.find('f4f4')==-1 and msg.find('f4') == -1:
+                #F4F4_FLAG = 0
+                #WE SAVED A STREAM BEFORE
 
-            print("str temp is:"+str_temp)
-            SAVE_LIST.append(str_temp)
-            SAVE_TEMP = ''
-            print(SAVE_LIST)
-            return
+                SAVE_TEMP += msg[2:ofset_index]
+                str_temp = SAVE_TEMP
+                ofset_found_flag=0
+                print("str temp is:"+str_temp)
+                SAVE_LIST.append(str_temp)
+                SAVE_TEMP = ''
+                print(SAVE_LIST)
+                return
             
     if END_WITH_SYCH_FLAG == 1:
         #In former message it ended with 'F4F4' then we should get the length of the offset
@@ -70,7 +71,7 @@ def export_data(msg,ofset):
         if ofset_index != -1:
             start_index = 2
             end_index = ofset_index
-            save_to_list(start_index,end_index,msg)
+            save_to_list(start_index,end_index,msg[2:])
         else:
             SAVE_TEMP += msg[2:]
             return
@@ -80,20 +81,16 @@ def export_data(msg,ofset):
     if data_index == -1:
         #it means there is no full SYNCH code so maybe there is half of it (just 'f4' and not 'f4f4').
         data_index = msg.find(HALF_SYNCH)#search for 'f4'
-        if data_index == -1:
-            SAVE_TEMP += msg[2:]
-            return #exit the function 
         if msg[2:4] == 'f4' :#message start with 'f4' then we should check if the former message ended with 'f4'
             #START_WITH_HALF_SYCH_FLAG = 1   
             if END_WITH_HALF_SYCH_FLAG == 1:#check the former message
                 END_WITH_HALF_SYCH_FLAG = 0
                 save_to_list(4,4,msg)
-        elif msg.endswith('f4'):
+        if msg.endswith('f4'):
             END_WITH_HALF_SYCH_FLAG = 1 #it means that we should look for 'f4' in the next message.        
     else:   
         F4F4_FLAG = 1
         if msg[2:6] == 'f4f4':#appers at first of the message
-            #extract_length(msg[6:],ofset)
             if ofset_found_flag == 1:
                 ofset_found_flag = 0
                 start_index = data_index+4
@@ -109,7 +106,7 @@ def export_data(msg,ofset):
             ofset_index = contains_offset(msg[data_index+4:],ofset)
             if ofset_index != -1:
                 start_index = data_index+4
-                end_index = ofset_index
+                end_index = data_index+4+ofset_index
                 save_to_list(start_index,end_index,msg)
             else:
                 SAVE_TEMP += msg[data_index+4:]    
@@ -121,8 +118,8 @@ def export_data(msg,ofset):
         #check if message ends with f4
         elif msg.endswith('f4'):
             END_WITH_HALF_SYCH_FLAG = 1 #it means that we should look for 'f4' in the next message.
-            
     print(SAVE_LIST)
+    
 
 def main():
 
