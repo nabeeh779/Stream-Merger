@@ -69,7 +69,7 @@ def export_data(msg):
         END_WITH_HALF_SYCH_FLAG = 0
         temp = check_beginning_of_message(msg[2:2+SYNCH_LEN-1-SYNCH_TEMP_INDEX])
         if temp != -1:
-            save_to_list(2+temp,2+temp+DATA_LENGTH)
+            save_to_list(2+temp,2+temp+DATA_LENGTH,msg)
    
     data_index = msg.find(SYNCH)#searching for synchronization , example:'f4f4'
     
