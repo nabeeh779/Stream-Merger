@@ -2,7 +2,7 @@
 
 #################################################
 #            Pleas Enter the SYNCH              #   
-#                       #                                               
+#                                               #                                               
 #################################################
 SYNCH = 'amit' #synchronization id 
 DATA_LENGTH = 6 # SIZE OF DATA IN MESSAGE IS THREE BYTES .
@@ -11,8 +11,8 @@ SYNCH_LEN = len(SYNCH)
 SYNCH_TEMP_INDEX = -1
 
 SAVE_LIST = [] #STORING THE DATA WE EXPORT FROM MESSAGE . 
-END_WITH_SYCH_FLAG = 0 #IF THE SYNCH CODE ('f4f4') APPERS AT THE END OF MESSAGE, THE FLAG CHANGES TO 1.
-END_WITH_HALF_SYCH_FLAG = 0#IF HLAF SYNCH CODE ('f4')APPERS AT THE END OF MESSAGE, THE FLAG CHANGES TO 1.
+END_WITH_SYCH_FLAG = 0 #IF THE SYNCH CODE APPERS AT THE END OF MESSAGE, THE FLAG CHANGES TO 1.
+END_WITH_HALF_SYCH_FLAG = 0#IF SOME OF SYNCH CODE APPERS AT THE END OF MESSAGE, THE FLAG CHANGES TO 1.
 START_WITH_HALF_SYCH_FLAG = 0
 
 
